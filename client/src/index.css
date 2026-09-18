@@ -1,0 +1,214 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-chassis: #e0e5ec;
+    --panel-fg: #f0f2f5;
+    --recessed-bg: #d1d9e6;
+    --text-primary: #2d3436;
+    --text-muted: #4a5568;
+    --accent-orange: #ff4757;
+    --accent-green: #2ed573;
+    --accent-amber: #ffa502;
+    --shadow-dark: #babecc;
+    --shadow-light: #ffffff;
+  }
+
+  body {
+    background-color: var(--bg-chassis);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background-image: 
+      radial-gradient(rgba(186, 190, 204, 0.25) 1px, transparent 1px),
+      radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: 0 0, 12px 12px;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Industrial Skeuomorphic Shadow & Texture System */
+.neu-base {
+  background: var(--bg-chassis);
+  box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+}
+
+.neu-panel {
+  background: var(--panel-fg);
+  box-shadow: 6px 6px 14px var(--shadow-dark), -6px -6px 14px var(--shadow-light);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.neu-floating {
+  background: var(--panel-fg);
+  box-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light), inset 1px 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.neu-pressed {
+  box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
+}
+
+.neu-recessed {
+  background: var(--recessed-bg);
+  box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+}
+
+.neu-recessed-deep {
+  background: #c8d1df;
+  box-shadow: inset 5px 5px 10px #b0bac9, inset -5px -5px 10px #ffffff;
+}
+
+.neu-button {
+  background: var(--bg-chassis);
+  box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+  transition: all 150ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.neu-button:hover {
+  box-shadow: 7px 7px 14px var(--shadow-dark), -7px -7px 14px var(--shadow-light);
+  transform: translateY(-1px);
+}
+
+.neu-button:active, .neu-button.active {
+  box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+  transform: translateY(2px);
+}
+
+.neu-button-accent {
+  background: #ff4757;
+  color: #ffffff;
+  box-shadow: 5px 5px 12px rgba(186, 190, 204, 0.8), -5px -5px 12px #ffffff, 0 0 12px rgba(255, 71, 87, 0.4);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: all 150ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.neu-button-accent:hover {
+  background: #ff5e6d;
+  box-shadow: 7px 7px 16px rgba(186, 190, 204, 0.9), -7px -7px 16px #ffffff, 0 0 18px rgba(255, 71, 87, 0.6);
+  transform: translateY(-1px);
+}
+
+.neu-button-accent:active {
+  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.3), inset -3px -3px 6px rgba(255, 255, 255, 0.2);
+  transform: translateY(2px);
+}
+
+/* Screw Head Rivet */
+.screw-head {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, #babecc 70%, #8892a4 100%);
+  box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.8), 1px 1px 2px rgba(0, 0, 0, 0.25);
+  position: relative;
+  display: inline-block;
+}
+
+.screw-head::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 7px;
+  height: 1.5px;
+  background: #5a6270;
+  transform: translate(-50%, -50%) rotate(45deg);
+  box-shadow: 0 0.5px 0.5px rgba(255, 255, 255, 0.4);
+}
+
+.screw-head.cross::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 7px;
+  height: 1.5px;
+  background: #5a6270;
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* Cooling Vent Slots */
+.vent-slots {
+  display: flex;
+  gap: 4px;
+}
+
+.vent-slot {
+  height: 16px;
+  width: 3px;
+  background: #3a404d;
+  border-radius: 2px;
+  box-shadow: inset 1px 1px 2px #1f232b, 1px 1px 1px rgba(255, 255, 255, 0.7);
+}
+
+/* Industrial Masking Tape / Spec Label */
+.industrial-label {
+  background: #fdf6e2;
+  color: #2b2b2b;
+  border: 1px dashed #d3be8b;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.08em;
+  transform: rotate(-0.5deg);
+}
+
+/* LED Glow System */
+.led-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.led-orange {
+  background-color: #ff4757;
+  box-shadow: 0 0 8px 2px rgba(255, 71, 87, 0.7), inset 1px 1px 2px #ffffff;
+}
+
+.led-green {
+  background-color: #2ed573;
+  box-shadow: 0 0 8px 2px rgba(46, 213, 115, 0.7), inset 1px 1px 2px #ffffff;
+}
+
+.led-amber {
+  background-color: #ffa502;
+  box-shadow: 0 0 8px 2px rgba(255, 165, 2, 0.7), inset 1px 1px 2px #ffffff;
+}
+
+.led-off {
+  background-color: #747d8c;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* CRT Screen Scanlines */
+.scanlines-overlay {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.06) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.02),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.02)
+  );
+  background-size: 100% 3px, 3px 100%;
+  pointer-events: none;
+}
+
+/* Embossed & Engraved Text */
+.text-embossed {
+  color: #2d3436;
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.9), -1px -1px 1px rgba(186, 190, 204, 0.6);
+}
+
+.text-engraved {
+  color: #4a5568;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8), -1px -1px 0 rgba(0, 0, 0, 0.15);
+}
