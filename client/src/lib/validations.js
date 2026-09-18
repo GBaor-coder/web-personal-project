@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-// Helper to strip dangerous HTML tags
+// Helper to strip dangerous HTML tags (used for plain-text fields only)
 export const sanitizeString = (str) => {
   if (typeof str !== 'string') return ''
   return str.replace(/<[^>]*>?/gm, '').trim()
@@ -16,7 +16,8 @@ export const projectSchema = z.object({
   tech_stack: z.array(z.string()).min(1, 'Chọn ít nhất 1 công nghệ (Select at least 1 tech item)'),
   live_url: z.string().url('Đường dẫn Live URL không hợp lệ (Invalid URL)').optional().or(z.literal('')),
   github_url: z.string().url('Đường dẫn GitHub không hợp lệ (Invalid GitHub URL)').optional().or(z.literal('')),
-  image_url: z.string().url('Đường dẫn ảnh không hợp lệ (Invalid Image URL)').optional().or(z.literal('')),
+  image_url: z.string().optional().or(z.literal('')),   // thumbnail — Supabase Storage URL
+  content: z.string().optional().or(z.literal('')),     // TipTap HTML — not sanitized (admin-only)
   featured: z.boolean().default(false),
 })
 
@@ -30,6 +31,7 @@ export const linkSchema = z.object({
   badge_text: z.string().max(40).optional().transform(sanitizeString),
   is_active: z.boolean().default(true),
   sort_order: z.number().int().default(0),
+  image_url: z.string().nullable().optional().transform((val) => (val === '' ? null : val)),
 })
 
 // Blog Schema
@@ -37,7 +39,8 @@ export const blogSchema = z.object({
   title: z.string().min(5, 'Tiêu đề bài viết phải từ 5 ký tự (Title >= 5 chars)').max(160).transform(sanitizeString),
   slug: z.string().min(3, 'Slug là bắt buộc (Slug required)').max(160).regex(/^[a-z0-9-]+$/, 'Slug chỉ gồm chữ thường không dấu và dấu gạch ngang (lowercase alphanumeric & hyphens)'),
   summary: z.string().min(10, 'Tóm tắt bài viết là bắt buộc (Summary required)').max(400).transform(sanitizeString),
-  content: z.string().min(20, 'Nội dung bài viết là bắt buộc (Content required)'),
+  content: z.string().min(20, 'Nội dung bài viết là bắt buộc (Content required)'), // TipTap HTML — not sanitized
+  thumbnail_url: z.string().optional().or(z.literal('')),                           // Supabase Storage URL
   read_time: z.string().default('5 phút đọc // 5 min read').transform(sanitizeString),
   tags: z.array(z.string()).default([]),
   published: z.boolean().default(true),

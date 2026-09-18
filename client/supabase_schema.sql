@@ -215,3 +215,99 @@ VALUES
     true
 )
 ON CONFLICT DO NOTHING;
+
+-- ==============================================================================
+-- 6. SUPABASE STORAGE: MEDIA BUCKET + RLS POLICIES
+-- Run this block in Supabase SQL Editor (Storage API requires pg extensions)
+-- ==============================================================================
+
+-- Create the 'media' storage bucket (public = true allows public URL access)
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+  'media',
+  'media',
+  true,
+  10485760, -- 10MB max file size
+  ARRAY['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml']
+)
+ON CONFLICT (id) DO UPDATE
+  SET public = true,
+      file_size_limit = 10485760,
+      allowed_mime_types = ARRAY['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
+
+-- ------------------------------------------------------------------------------
+-- STORAGE RLS: Allow PUBLIC to READ all objects in 'media' bucket
+-- ------------------------------------------------------------------------------
+CREATE POLICY "Public can view media files"
+ON storage.objects FOR SELECT
+TO public
+USING (bucket_id = 'media');
+
+-- ------------------------------------------------------------------------------
+-- STORAGE RLS: Allow ONLY ADMIN to INSERT (upload) files to 'media' bucket
+-- Paths: media/projects/*, media/blogs/*
+-- ------------------------------------------------------------------------------
+CREATE POLICY "Only admin can upload media files"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (
+  bucket_id = 'media'
+  AND public.is_admin()
+);
+
+-- ------------------------------------------------------------------------------
+-- STORAGE RLS: Allow ONLY ADMIN to UPDATE objects in 'media' bucket
+-- ------------------------------------------------------------------------------
+CREATE POLICY "Only admin can update media files"
+ON storage.objects FOR UPDATE
+TO authenticated
+USING (
+  bucket_id = 'media'
+  AND public.is_admin()
+);
+
+-- ------------------------------------------------------------------------------
+-- STORAGE RLS: Allow ONLY ADMIN to DELETE files from 'media' bucket
+-- ------------------------------------------------------------------------------
+CREATE POLICY "Only admin can delete media files"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (
+  bucket_id = 'media'
+  AND public.is_admin()
+);
+
+-- ==============================================================================
+-- 7. SCHEMA MIGRATION: Add thumbnail_url to blogs table
+-- Safe migration — adds nullable column, no existing data affected
+-- ==============================================================================
+ALTER TABLE public.blogs
+  ADD COLUMN IF NOT EXISTS thumbnail_url TEXT;
+
+-- ==============================================================================
+-- 8. UPDATE is_admin() FUNCTION — DOUBLE-LAYER SECURITY
+-- Replace 'your-admin-email@domain.com' with your actual admin email
+-- OR set VITE_ADMIN_EMAIL in your .env and keep SQL in sync manually
+-- ==============================================================================
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN (
+    auth.role() = 'authenticated'
+    AND (
+      -- Layer 1: Email match (set this to your actual admin email)
+      auth.jwt() ->> 'email' = 'your-admin-email@domain.com'
+      -- Layer 2: app_metadata role check (set via Supabase Dashboard or Admin API)
+      OR (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'
+    )
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- NOTE: To set app_metadata.role = 'admin' for your user, run this in SQL Editor
+-- after finding your user's UUID from auth.users:
+--
+-- UPDATE auth.users
+-- SET raw_app_meta_data = raw_app_meta_data || '{"role": "admin"}'::jsonb
+-- WHERE email = 'your-admin-email@domain.com';
+

@@ -91,10 +91,10 @@ export const BioLinkPage = () => {
         {/* Profile Tactical Frame */}
         <div className="relative inline-block mt-2 mb-3">
           <div className="w-24 h-24 rounded-2xl neu-recessed p-1.5 border-2 border-white/80 mx-auto overflow-hidden">
-            <img 
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" 
+<img 
+              src="src/assets/images/profile.jpg" 
               alt="Operator Profile" 
-              className="w-full h-full object-cover rounded-xl filter grayscale contrast-125 hover:grayscale-0 transition-all duration-300"
+              className="w-full h-full object-cover rounded-xl filter grayscale contrast-125"
             />
           </div>
           <div className="absolute -bottom-2 -right-2 p-1 rounded-lg neu-panel border border-white/70">
@@ -165,21 +165,54 @@ export const BioLinkPage = () => {
                 exit={{ opacity: 0, scale: 0.96 }}
                 transition={{ duration: 0.2 }}
                 onClick={() => handleLinkClick(link.id, link.url)}
-                className="group relative rounded-2xl neu-panel p-4 cursor-pointer border border-white/80 hover:border-white shadow-[6px_6px_14px_#babecc,-6px_-6px_14px_#ffffff] active:translate-y-[2px] transition-all"
+                className="group relative rounded-2xl neu-panel p-3 sm:p-4 cursor-pointer border border-white/80 hover:border-white shadow-[6px_6px_14px_#babecc,-6px_-6px_14px_#ffffff] active:translate-y-[2px] transition-all"
               >
                 <ScrewHead className="absolute top-2.5 left-2.5" />
                 <ScrewHead className="absolute top-2.5 right-2.5 cross" />
 
-                <div className="flex items-center justify-between gap-4 pt-1">
-                  {/* Left Icon */}
-                  <div className="p-3 rounded-xl neu-recessed text-[#ff4757] group-hover:shadow-[inset_2px_2px_4px_#babecc,inset_-2px_-2px_4px_#ffffff] shrink-0">
-                    <IconComponent className="w-6 h-6" />
-                  </div>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-1">
+                  {/* Left Icon / CRT Screen — static, no hover effects */}
+                  {link.image_url ? (
+                    /* Miniature CRT Screen — recessed into the chassis */
+                    <div className="shrink-0">
+                      <div
+                        className="relative overflow-hidden rounded-md"
+                        style={{
+                          background: '#121010',
+                          boxShadow: 'inset 4px 4px 8px #babecc, inset -4px -4px 8px #ffffff',
+                          border: '1px solid #babecc',
+                          width: '64px',
+                          height: '64px',
+                        }}
+                      >
+                        <img
+                          src={link.image_url}
+                          alt={link.title}
+                          className="w-full h-full object-cover"
+                          style={{ imageRendering: 'pixelated' }}
+                        />
+                        {/* Scanlines overlay — strictly on top of the image */}
+                        <div
+                          className="absolute inset-0 pointer-events-none"
+                          style={{
+                            background:
+                              'repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 3px)',
+                            mixBlendMode: 'multiply',
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    /* Fallback: Lucide icon in mechanical slot */
+                    <div className="p-3 rounded-xl neu-recessed text-[#ff4757] shrink-0">
+                      <IconComponent className="w-6 h-6" />
+                    </div>
+                  )}
 
-                  {/* Middle Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap mb-1">
-                      <h3 className="text-sm font-bold text-[#2d3436] group-hover:text-[#ff4757] transition-colors line-clamp-1">
+                  {/* Middle Content — full product info in compact LCD readout */}
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="text-sm font-bold text-[#2d3436] line-clamp-1">
                         {link.title}
                       </h3>
                       {link.badge_text && (
@@ -188,33 +221,43 @@ export const BioLinkPage = () => {
                         </IndustrialBadge>
                       )}
                     </div>
-                    {link.subtitle && (
-                      <p className="text-[11px] font-mono text-[#8892a4] line-clamp-1">
-                        {link.subtitle}
-                      </p>
+
+                    {/* Recessed LCD data readout — compact, scrollable specs */}
+                    {(link.subtitle || link.description) && (
+                      <div
+                        className="rounded-md px-2 py-1.5 text-[11px] font-mono text-[#4a5568] leading-relaxed overflow-y-auto"
+                        style={{
+                          background: '#d1d9e6',
+                          boxShadow: 'inset 3px 3px 6px #babecc, inset -3px -3px 6px #ffffff',
+                          maxHeight: '5rem',
+                        }}
+                      >
+                        {link.subtitle && (
+                          <p className="font-bold text-[#2d3436] line-clamp-1">{link.subtitle}</p>
+                        )}
+                        {link.description && (
+                          <span className="line-clamp-3">{link.description}</span>
+                        )}
+                      </div>
                     )}
-                    {link.description && (
-                      <p className="text-xs text-[#4a5568] line-clamp-1 font-sans mt-0.5">
-                        {link.description}
-                      </p>
-                    )}
-                    <div className="flex items-center gap-3 mt-1.5 text-[10px] font-mono text-[#8892a4]">
+
+                    <div className="flex items-center gap-3 text-[10px] font-mono text-[#8892a4]">
                       <span className="text-[#ff4757] font-semibold">{link.clicks || 0} LƯỢT TRUY CẬP // CLICKS</span>
                       <span>•</span>
                       <span className="uppercase text-[#2d3436] font-bold">{link.category}</span>
                     </div>
                   </div>
 
-                  {/* Right Actions */}
+                  {/* Right Actions — 48px min touch target on mobile */}
                   <div className="flex items-center gap-2 shrink-0">
                     <button
                       onClick={(e) => handleCopyLink(e, link.id, link.url)}
-                      className="p-2 rounded-xl neu-button text-[#4a5568] hover:text-[#2d3436]"
+                      className="p-3 rounded-xl neu-button text-[#4a5568] hover:text-[#2d3436] min-h-[48px] min-w-[48px]"
                       title="Sao chép liên kết"
                     >
                       {isCopied ? <Check className="w-4 h-4 text-[#2ed573]" /> : <Copy className="w-4 h-4" />}
                     </button>
-                    <div className="p-2 rounded-xl neu-button-accent text-white group-hover:scale-105 transition-transform">
+                    <div className="p-3 rounded-xl neu-button-accent text-white min-h-[48px] min-w-[48px] flex items-center justify-center">
                       <ExternalLink className="w-4 h-4" />
                     </div>
                   </div>
