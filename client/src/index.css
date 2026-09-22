@@ -212,3 +212,42 @@
   color: #4a5568;
   text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8), -1px -1px 0 rgba(0, 0, 0, 0.15);
 }
+
+/* Hide horizontal scrollbars on overflow-x scroll containers (mobile chip rails) */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile / touch & focus polish */
+@layer base {
+  button,
+  a,
+  [role='button'],
+  input,
+  select,
+  textarea {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  :focus-visible {
+    outline: 2px solid rgba(255, 71, 87, 0.65);
+    outline-offset: 3px;
+  }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

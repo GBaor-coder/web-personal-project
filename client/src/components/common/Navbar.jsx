@@ -14,7 +14,7 @@ export const Navbar = () => {
   ]
 
   return (
-    <header className="sticky top-4 z-50 max-w-6xl mx-auto px-4 mb-8">
+    <header className="sticky top-[max(1rem,env(safe-area-inset-top))] z-50 max-w-6xl mx-auto px-4 mb-8">
       <div className="relative rounded-2xl neu-panel p-3.5 flex items-center justify-between shadow-[8px_8px_16px_#babecc,-8px_-8px_16px_#ffffff]">
         <ScrewHead className="absolute top-2.5 left-2.5" />
         <ScrewHead className="absolute top-2.5 right-2.5 cross" />

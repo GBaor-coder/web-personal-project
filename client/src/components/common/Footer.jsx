@@ -7,7 +7,7 @@ import { LedIndicator } from './LedIndicator'
 
 export const Footer = () => {
   return (
-    <footer className="max-w-6xl mx-auto px-4 mt-20 pb-12">
+    <footer className="max-w-6xl mx-auto px-4 mt-20 pb-[max(3rem,env(safe-area-inset-bottom))]">
       <div className="relative rounded-2xl neu-panel p-6 shadow-[8px_8px_16px_#babecc,-8px_-8px_16px_#ffffff]">
         <ScrewHead className="absolute top-3 left-3" />
         <ScrewHead className="absolute top-3 right-3 cross" />
